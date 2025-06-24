@@ -18,14 +18,23 @@ var versionCmd = &cobra.Command{
 			return
 		}
 
+		if versionPrintText {
+			fmt.Println(b.String())
+			return
+		}
+
 		b.PrettyPrint()
 	},
 }
 
-var versionPrintJSON bool
+var (
+	versionPrintJSON bool
+	versionPrintText bool
+)
 
 func init() {
 	rootCmd.AddCommand(versionCmd)
 
 	versionCmd.Flags().BoolVarP(&versionPrintJSON, "json", "j", false, "Output version information in JSON format")
+	versionCmd.Flags().BoolVarP(&versionPrintText, "text", "t", false, "Output version information in text format")
 }

@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"strings"
 )
 
 func ReadFromStdin(prompt string) (string, error) {
@@ -27,7 +28,12 @@ func ReadFromStdin(prompt string) (string, error) {
 	fmt.Print(prompt)
 
 	reader := bufio.NewReader(os.Stdin)
-	return reader.ReadString('\n')
+	str, err := reader.ReadString('\n')
+	if err != nil {
+		return "", err
+	}
+
+	return strings.TrimSpace(str), nil
 }
 
 func isTerminal(f *os.File) bool {

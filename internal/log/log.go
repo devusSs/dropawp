@@ -111,7 +111,7 @@ func createDirs(dir string) error {
 		return errors.New("directory path cannot be empty")
 	}
 
-	err := os.MkdirAll(dir, 0700)
+	err := os.MkdirAll(dir, 0750)
 	if err != nil {
 		return err
 	}

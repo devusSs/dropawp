@@ -61,7 +61,13 @@ func Load(filePath string) (*Config, error) {
 	return c, nil
 }
 
-func NewConfig(logKeepInterval string, storageKeepInterval string, wantSteamCheck string, username string, steamID64 string) (*Config, error) {
+func NewConfig(
+	logKeepInterval string,
+	storageKeepInterval string,
+	wantSteamCheck string,
+	username string,
+	steamID64 string,
+) (*Config, error) {
 	logKeepDur, err := parseExtendedDuration(logKeepInterval)
 	if err != nil {
 		return nil, err
@@ -97,6 +103,11 @@ func NewConfig(logKeepInterval string, storageKeepInterval string, wantSteamChec
 	}, nil
 }
 
+const (
+	dayFormatter  = 24 * time.Hour
+	weekFormatter = 7 * dayFormatter
+)
+
 func parseExtendedDuration(s string) (time.Duration, error) {
 	unitMap := map[string]time.Duration{
 		"ns": time.Nanosecond,
@@ -106,8 +117,8 @@ func parseExtendedDuration(s string) (time.Duration, error) {
 		"s":  time.Second,
 		"m":  time.Minute,
 		"h":  time.Hour,
-		"d":  time.Hour * 24,
-		"w":  time.Hour * 24 * 7,
+		"d":  dayFormatter,
+		"w":  weekFormatter,
 	}
 
 	if d, err := time.ParseDuration(s); err == nil {

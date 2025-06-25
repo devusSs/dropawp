@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
 	"time"
@@ -25,6 +26,11 @@ func (c *Config) String() string {
 func (c *Config) Write(filePath string) error {
 	if filePath == "" {
 		return errors.New("file path cannot be empty")
+	}
+
+	err := os.MkdirAll(filepath.Dir(filePath), 0750)
+	if err != nil {
+		return fmt.Errorf("failed to create directory for config file: %w", err)
 	}
 
 	f, err := os.Create(filePath)

@@ -152,7 +152,6 @@ var listProjectsCmd = &cobra.Command{
 	Run: func(_ *cobra.Command, _ []string) {
 		if len(loadedProjects) == 0 {
 			fmt.Println("No tracking projects found.")
-			fmt.Println("Run 'dropawp new' to create a new project.")
 			return
 		}
 
@@ -202,12 +201,16 @@ var deleteProjectCmd = &cobra.Command{
 
 		newProjects := make([]*projects.Project, 0)
 		appended := 0
+		deletedProject := &projects.Project{}
 
 		for _, project := range loadedProjects {
 			if project.Name != deleteProjectName {
 				newProjects = append(newProjects, project)
 				appended++
+				continue
 			}
+
+			deletedProject = project
 		}
 
 		if appended == len(loadedProjects) {
@@ -217,7 +220,14 @@ var deleteProjectCmd = &cobra.Command{
 		err := projects.SaveProjects(baseDir, newProjects)
 		cobra.CheckErr(err)
 
-		// TODO: remove the project's directories and files
+		err = os.RemoveAll(deletedProject.LogsDir)
+		cobra.CheckErr(err)
+
+		err = os.Remove(deletedProject.ConfigFile)
+		cobra.CheckErr(err)
+
+		err = os.RemoveAll(deletedProject.StorageDir)
+		cobra.CheckErr(err)
 
 		fmt.Printf("Project '%s' deleted successfully.\n", deleteProjectName)
 	},

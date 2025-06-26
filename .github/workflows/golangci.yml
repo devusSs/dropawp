@@ -44,5 +44,16 @@ jobs:
       - name: Test All
         run: go test -v ./...
 
-      - name: Build
-        run: go build -v ./...
+      - name: Setup and build buildscript
+        run: |
+          chmod +x ./build.sh
+          ./build.sh
+
+      - name: Run dropawp version
+        run: ./dropawp version
+
+      - name: Run dropawp version with JSON output
+        run: ./dropawp version -j
+
+      - name: Run dropawp version with text output
+        run: ./dropawp version -t

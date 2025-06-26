@@ -8,5 +8,5 @@
 go.work
 go.work.sum
 dropawp
-
+*.env
 dist/

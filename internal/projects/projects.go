@@ -8,13 +8,15 @@ import (
 	"os"
 	"path/filepath"
 	"sync"
+	"time"
 )
 
 type Project struct {
-	Name       string `json:"name"`
-	LogsDir    string `json:"logs_dir"`
-	ConfigFile string `json:"config_file"`
-	StorageDir string `json:"storage_dir"`
+	Name       string    `json:"name"`
+	Timestamp  time.Time `json:"timestamp"`
+	LogsDir    string    `json:"logs_dir"`
+	ConfigFile string    `json:"config_file"`
+	StorageDir string    `json:"storage_dir"`
 }
 
 func (p *Project) String() string {

@@ -21,6 +21,15 @@ func (p *Project) String() string {
 	return fmt.Sprintf("%+v", *p)
 }
 
+func (p *Project) JSON() string {
+	m, err := json.MarshalIndent(p, "", "  ")
+	if err != nil {
+		return fmt.Sprintf("Error marshalling project info: %v", err)
+	}
+
+	return string(m)
+}
+
 func Load(dir string) ([]*Project, error) {
 	setup(dir)
 

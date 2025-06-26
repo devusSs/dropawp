@@ -12,7 +12,7 @@ import (
 var clearCmd = &cobra.Command{
 	Use:   "clear",
 	Short: "Clears all data saved by the application",
-	Run: func(cmd *cobra.Command, args []string) {
+	Run: func(_ *cobra.Command, _ []string) {
 		confirm, err := stdin.ReadFromStdin(
 			"Are you sure you want to clear all data? This action cannot be undone (yes/no)",
 		)

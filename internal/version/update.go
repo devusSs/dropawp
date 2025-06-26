@@ -92,6 +92,7 @@ type githubReleases []struct {
 var errNoLatestRelease = errors.New("no latest release found")
 
 func getLatestGithubReleaseVersion() (string, error) {
+	//nolint:noctx // Dont be so strict here.
 	resp, err := http.Get(githubRepoReleases)
 	if err != nil {
 		return "", err

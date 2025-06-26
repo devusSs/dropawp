@@ -49,7 +49,7 @@ var addProjectCmd = &cobra.Command{
 
 		for _, project := range loadedProjects {
 			if project.Name == name {
-				cobra.CheckErr(fmt.Errorf("Project with name '%s' already exists", name))
+				cobra.CheckErr(fmt.Errorf("project with name '%s' already exists", name))
 			}
 		}
 
@@ -194,9 +194,9 @@ var listProjectsCmd = &cobra.Command{
 var deleteProjectCmd = &cobra.Command{
 	Use:   "delete",
 	Short: "Delete a tracking project by its name",
-	Run: func(_ *cobra.Command, args []string) {
+	Run: func(_ *cobra.Command, _ []string) {
 		if deleteProjectName == "" {
-			cobra.CheckErr(errors.New("Project name is required"))
+			cobra.CheckErr(errors.New("project name is required"))
 		}
 
 		newProjects := make([]*projects.Project, 0)
@@ -214,7 +214,7 @@ var deleteProjectCmd = &cobra.Command{
 		}
 
 		if appended == len(loadedProjects) {
-			cobra.CheckErr(fmt.Errorf("Project '%s' not found", deleteProjectName))
+			cobra.CheckErr(fmt.Errorf("project '%s' not found", deleteProjectName))
 		}
 
 		err := projects.SaveProjects(baseDir, newProjects)
@@ -255,5 +255,7 @@ func init() {
 	projectsCmd.AddCommand(deleteProjectCmd)
 	deleteProjectCmd.Flags().
 		StringVarP(&deleteProjectName, "name", "n", "", "Name of the project to delete")
-	deleteProjectCmd.MarkFlagRequired("name")
+
+	err := deleteProjectCmd.MarkFlagRequired("name")
+	cobra.CheckErr(err)
 }

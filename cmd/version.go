@@ -9,7 +9,7 @@ import (
 
 var versionCmd = &cobra.Command{
 	Use:   "version",
-	Short: "Prints the build information of the application and exits.",
+	Short: "Prints the build information of the application and exits",
 	Run: func(_ *cobra.Command, _ []string) {
 		b := version.GetBuild()
 
@@ -35,6 +35,8 @@ var (
 func init() {
 	rootCmd.AddCommand(versionCmd)
 
-	versionCmd.Flags().BoolVarP(&versionPrintJSON, "json", "j", false, "Output version information in JSON format")
-	versionCmd.Flags().BoolVarP(&versionPrintText, "text", "t", false, "Output version information in text format")
+	versionCmd.Flags().
+		BoolVarP(&versionPrintJSON, "json", "j", false, "Output version information in JSON format")
+	versionCmd.Flags().
+		BoolVarP(&versionPrintText, "text", "t", false, "Output version information in text format")
 }

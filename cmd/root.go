@@ -8,7 +8,7 @@ import (
 
 var rootCmd = &cobra.Command{
 	Use:   "dropawp",
-	Short: "A Go tool to track your Counter-Strike 2 inventory.",
+	Short: "A Go tool to track your Counter-Strike inventory.",
 }
 
 func Execute() {

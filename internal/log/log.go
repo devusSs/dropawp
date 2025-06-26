@@ -12,6 +12,10 @@ import (
 )
 
 func Setup(dir string) error {
+	if logSilent() {
+		return nil
+	}
+
 	if dir == "" {
 		return errors.New("log directory cannot be empty")
 	}
@@ -25,48 +29,59 @@ func Setup(dir string) error {
 }
 
 func Debug(msg string, args ...any) {
-	if consoleLogger == nil || fileLogger == nil {
+	if logSilent() {
+		return
+	}
+
+	if fileLogger == nil {
 		fmt.Fprintln(os.Stderr, "Loggers are not initialized. Please call Setup()")
 		return
 	}
 
-	consoleLogger.Debug(msg, args...)
 	fileLogger.Debug(msg, args...)
 }
 
 func Info(msg string, args ...any) {
-	if consoleLogger == nil || fileLogger == nil {
+	if logSilent() {
+		return
+	}
+
+	if fileLogger == nil {
 		fmt.Fprintln(os.Stderr, "Loggers are not initialized. Please call Setup()")
 		return
 	}
 
-	consoleLogger.Info(msg, args...)
 	fileLogger.Info(msg, args...)
 }
 
 func Warn(msg string, args ...any) {
-	if consoleLogger == nil || fileLogger == nil {
+	if logSilent() {
+		return
+	}
+
+	if fileLogger == nil {
 		fmt.Fprintln(os.Stderr, "Loggers are not initialized. Please call Setup()")
 		return
 	}
 
-	consoleLogger.Warn(msg, args...)
 	fileLogger.Warn(msg, args...)
 }
 
 func Error(msg string, args ...any) {
-	if consoleLogger == nil || fileLogger == nil {
+	if logSilent() {
+		return
+	}
+
+	if fileLogger == nil {
 		fmt.Fprintln(os.Stderr, "Loggers are not initialized. Please call Setup()")
 		return
 	}
 
-	consoleLogger.Error(msg, args...)
 	fileLogger.Error(msg, args...)
 }
 
 var (
-	consoleLogger *slog.Logger
-	fileLogger    *slog.Logger
+	fileLogger *slog.Logger
 )
 
 func createLoggers(dir string) error {
@@ -74,10 +89,6 @@ func createLoggers(dir string) error {
 	if err != nil {
 		return fmt.Errorf("failed to create log file: %w", err)
 	}
-
-	consoleLogger = slog.New(slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{
-		Level: getLogLevelFromEnv(),
-	}))
 
 	fileLogger = slog.New(slog.NewJSONHandler(fileWriter, &slog.HandlerOptions{
 		Level: getLogLevelFromEnv(),
@@ -134,4 +145,8 @@ func getLogLevelFromEnv() slog.Level {
 	default:
 		return slog.LevelInfo
 	}
+}
+
+func logSilent() bool {
+	return os.Getenv("DROPAWP_LOG_SILENT") == "true"
 }

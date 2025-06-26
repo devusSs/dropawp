@@ -3,6 +3,7 @@ package cmd
 import (
 	"errors"
 	"fmt"
+	"log/slog"
 	"os"
 	"path/filepath"
 	"text/tabwriter"
@@ -68,15 +69,23 @@ var addProjectCmd = &cobra.Command{
 		err = storage.CreateDir(storageDir)
 		cobra.CheckErr(err)
 
+		ts := time.Now()
 		err = projects.SaveProject(baseDir, &projects.Project{
 			Name:       name,
-			Timestamp:  time.Now(),
+			Timestamp:  ts,
 			LogsDir:    logsDir,
 			ConfigFile: configFile,
 			StorageDir: storageDir,
 		})
 		cobra.CheckErr(err)
 
+		log.Info("Project added successfully.",
+			slog.String("name", name),
+			slog.Time("timestamp", ts),
+			slog.String("logsDir", logsDir),
+			slog.String("configFile", configFile),
+			slog.String("storageDir", storageDir),
+		)
 		fmt.Printf("Project '%s' added successfully.\n", name)
 	},
 }

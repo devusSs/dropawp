@@ -96,6 +96,37 @@ func SaveProject(dir string, p *Project) error {
 	return nil
 }
 
+func SaveProjects(dir string, projects []*Project) error {
+	setup(dir)
+
+	if projects == nil {
+		return errors.New("projects cannot be nil")
+	}
+
+	file, err := os.OpenFile(projectFile, os.O_RDWR|os.O_CREATE, 0600)
+	if err != nil {
+		return fmt.Errorf("failed to open projects file: %w", err)
+	}
+	defer file.Close()
+
+	err = file.Truncate(0)
+	if err != nil {
+		return fmt.Errorf("failed to truncate projects file: %w", err)
+	}
+
+	_, err = file.Seek(0, io.SeekStart)
+	if err != nil {
+		return fmt.Errorf("failed to seek to start of projects file: %w", err)
+	}
+
+	err = json.NewEncoder(file).Encode(projects)
+	if err != nil {
+		return fmt.Errorf("failed to encode projects: %w", err)
+	}
+
+	return nil
+}
+
 var (
 	once        = &sync.Once{}
 	projectFile = ""

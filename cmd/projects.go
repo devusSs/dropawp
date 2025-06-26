@@ -136,7 +136,33 @@ func readConfigFromStdin(projectName string) (*config.Config, error) {
 		return nil, errors.New("SteamID64 cannot be empty")
 	}
 
-	c, err := config.NewConfig(logKeep, storageKeep, wantSteamCheck, username, steamID64)
+	filterUntradable, err := stdin.ReadFromStdin(
+		"Do you want to filter untradable items? (default: false)",
+	)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read filter untradable preference: %w", err)
+	}
+
+	if filterUntradable == "" {
+		filterUntradable = "false"
+	}
+
+	additionalItemsFile, err := stdin.ReadFromStdin(
+		"Enter the path to additional items file (optional, leave empty for none)",
+	)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read additional items file path: %w", err)
+	}
+
+	c, err := config.NewConfig(
+		logKeep,
+		storageKeep,
+		wantSteamCheck,
+		username,
+		steamID64,
+		filterUntradable,
+		additionalItemsFile,
+	)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create config: %w", err)
 	}

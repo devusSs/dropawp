@@ -46,8 +46,8 @@ jobs:
 
       - name: Setup and build buildscript
         run: |
-          chmod +x ./build.sh
-          ./build.sh
+          chmod +x ./buildscripts/build.sh
+          ./buildscripts/build.sh
 
       - name: Run dropawp version
         run: ./dropawp version

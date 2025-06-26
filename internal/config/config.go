@@ -17,6 +17,8 @@ type Config struct {
 	WantSteamCheck      bool          `json:"want_steam_check"`
 	Username            string        `json:"username"`
 	SteamID64           string        `json:"steam_id_64"`
+	FilterUntradable    bool          `json:"filter_untradable"`
+	AdditionalItemsFile string        `json:"additional_items_file"`
 }
 
 func (c *Config) String() string {
@@ -73,6 +75,8 @@ func NewConfig(
 	wantSteamCheck string,
 	username string,
 	steamID64 string,
+	filterUntradable string,
+	additionalItemsFile string,
 ) (*Config, error) {
 	logKeepDur, err := parseExtendedDuration(logKeepInterval)
 	if err != nil {
@@ -100,12 +104,24 @@ func NewConfig(
 		return nil, errors.New("steam_id_64 cannot be empty")
 	}
 
+	filterUntradableBool, err := strconv.ParseBool(filterUntradable)
+	if err != nil {
+		return nil, fmt.Errorf("invalid filter_untradable value: %w", err)
+	}
+
+	_, err = os.Stat(additionalItemsFile)
+	if err != nil && !os.IsNotExist(err) {
+		return nil, fmt.Errorf("failed to check additional items file: %w", err)
+	}
+
 	return &Config{
 		LogKeepInterval:     logKeepDur,
 		StorageKeepInterval: storageKeepDur,
 		WantSteamCheck:      wantSteamCheckBool,
 		Username:            username,
 		SteamID64:           steamID64,
+		FilterUntradable:    filterUntradableBool,
+		AdditionalItemsFile: additionalItemsFile,
 	}, nil
 }
 

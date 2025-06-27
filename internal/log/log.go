@@ -80,6 +80,38 @@ func Error(msg string, args ...any) {
 	fileLogger.Error(msg, args...)
 }
 
+func CleanupOld(dir string, deadline time.Duration) error {
+	if dir == "" {
+		return errors.New("directory path cannot be empty")
+	}
+
+	files, err := os.ReadDir(dir)
+	if err != nil {
+		return fmt.Errorf("failed to read directory %s: %w", dir, err)
+	}
+
+	for _, file := range files {
+		if file.IsDir() {
+			return fmt.Errorf("directory %s contains subdirectories, expected only files", dir)
+		}
+
+		filePath := filepath.Join(dir, file.Name())
+		info, err := file.Info()
+		if err != nil {
+			return fmt.Errorf("failed to get info for file %s: %w", filePath, err)
+		}
+
+		if time.Since(info.ModTime()) > deadline {
+			err = os.Remove(filePath)
+			if err != nil {
+				return fmt.Errorf("failed to remove old log file %s: %w", filePath, err)
+			}
+		}
+	}
+
+	return nil
+}
+
 var (
 	fileLogger *slog.Logger
 )

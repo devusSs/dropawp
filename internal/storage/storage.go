@@ -40,7 +40,9 @@ func CleanupOld(dir string, deadline time.Duration) error {
 		}
 
 		filePath := filepath.Join(dir, file.Name())
-		info, err := os.Stat(filePath)
+
+		var info os.FileInfo
+		info, err = os.Stat(filePath)
 		if err != nil {
 			return fmt.Errorf("failed to get info for file %s: %w", filePath, err)
 		}

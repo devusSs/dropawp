@@ -69,6 +69,11 @@ func Load(filePath string) (*Config, error) {
 	return c, nil
 }
 
+const (
+	MinLogKeepInterval     = 1 * time.Hour
+	MinStorageKeepInterval = 24 * time.Hour
+)
+
 func NewConfig(
 	logKeepInterval string,
 	storageKeepInterval string,
@@ -83,9 +88,17 @@ func NewConfig(
 		return nil, err
 	}
 
+	if logKeepDur < MinLogKeepInterval {
+		return nil, fmt.Errorf("log keep interval must be at least %s", MinLogKeepInterval)
+	}
+
 	storageKeepDur, err := parseExtendedDuration(storageKeepInterval)
 	if err != nil {
 		return nil, err
+	}
+
+	if storageKeepDur < MinStorageKeepInterval {
+		return nil, fmt.Errorf("storage keep interval must be at least %s", MinStorageKeepInterval)
 	}
 
 	wantSteamCheckBool := true

@@ -3,6 +3,7 @@ package version
 import (
 	"encoding/json"
 	"fmt"
+	"runtime"
 )
 
 var (
@@ -51,6 +52,17 @@ func (b Build) Pretty() string {
 		b.GoOS,
 		b.GoArch,
 	)
+}
+
+func GetBuild() Build {
+	return Build{
+		Version:   Version,
+		Commit:    Commit,
+		Date:      Date,
+		GoVersion: runtime.Version(),
+		GoOS:      runtime.GOOS,
+		GoArch:    runtime.GOARCH,
+	}
 }
 
 func init() {

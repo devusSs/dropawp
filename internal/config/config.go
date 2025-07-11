@@ -114,7 +114,9 @@ func FromInput() (*Config, error) {
 	}
 
 	var cooldownDurationStr string
-	cooldownDurationStr, err = getInput("Enter cooldown duration (e.g., 5m, 1h, 1d, 1w etc.)")
+	cooldownDurationStr, err = getInput(
+		fmt.Sprintf("Enter cooldown duration (default %s)", minCooldownDuration.String()),
+	)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get cooldown duration: %w", err)
 	}
@@ -130,7 +132,9 @@ func FromInput() (*Config, error) {
 	}
 
 	var skipSteamServicesCheckStr string
-	skipSteamServicesCheckStr, err = getInput("Skip Steam services check? (true/false)")
+	skipSteamServicesCheckStr, err = getInput(
+		"Skip Steam services check? (true/false, default false)",
+	)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get skip Steam services check: %w", err)
 	}
@@ -147,7 +151,7 @@ func FromInput() (*Config, error) {
 	}
 
 	var steamID64Str string
-	steamID64Str, err = getInput("Enter Steam ID64")
+	steamID64Str, err = getInput("Enter Steam ID64 (required)")
 	if err != nil {
 		return nil, fmt.Errorf("failed to get Steam ID64: %w", err)
 	}
@@ -163,7 +167,7 @@ func FromInput() (*Config, error) {
 	}
 
 	var skipSteamUserCheckStr string
-	skipSteamUserCheckStr, err = getInput("Skip Steam user check? (true/false)")
+	skipSteamUserCheckStr, err = getInput("Skip Steam user check? (true/false, default false)")
 	if err != nil {
 		return nil, fmt.Errorf("failed to get skip Steam user check: %w", err)
 	}
@@ -179,7 +183,9 @@ func FromInput() (*Config, error) {
 	}
 
 	var skipFilterUntradableItemsStr string
-	skipFilterUntradableItemsStr, err = getInput("Skip filter untradable items? (true/false)")
+	skipFilterUntradableItemsStr, err = getInput(
+		"Skip filter untradable items? (true/false, default false)",
+	)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get skip filter untradable items: %w", err)
 	}

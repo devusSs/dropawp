@@ -1,14 +1,14 @@
 package config
 
 import (
+	"crypto/rand"
 	"encoding/json"
 	"errors"
 	"fmt"
+	"math/big"
 	"os"
 	"path/filepath"
 	"time"
-
-	"github.com/google/uuid"
 )
 
 type Config struct {
@@ -102,15 +102,18 @@ func Delete(c *Config) error {
 	return nil
 }
 
-//nolint:funlen // This function has to be that long unfortunately, I am too lazy to refactor it.
+//nolint:funlen,gocognit // This function has to be that long unfortunately, I am too lazy to refactor it.
 func FromInput() (*Config, error) {
-	projectName, err := getInput("Enter a project name (empty for random uuid)")
+	projectName, err := getInput("Enter a project name (empty for random name)")
 	if err != nil {
 		return nil, fmt.Errorf("failed to get project name: %w", err)
 	}
 
 	if projectName == "" {
-		projectName = uuid.New().String()
+		projectName, err = generateRandomString(minProjectNameLength, maxProjectNameLength)
+		if err != nil {
+			return nil, fmt.Errorf("failed to generate random project name: %w", err)
+		}
 	}
 
 	var cooldownDurationStr string
@@ -270,3 +273,33 @@ func FromFile() (*Config, error) {
 }
 
 var file string
+
+func generateRandomString(minLength, maxLength int) (string, error) {
+	if minLength < 0 || maxLength < 0 {
+		return "", errors.New("lengths must be non-negative")
+	}
+	if minLength > maxLength {
+		return "", errors.New("minLength cannot be greater than maxLength")
+	}
+
+	const charset = "abcdefghijklmnopqrstuvwxyz"
+
+	lengthRange := maxLength - minLength + 1
+	randomLengthOffset, err := rand.Int(rand.Reader, big.NewInt(int64(lengthRange)))
+	if err != nil {
+		return "", fmt.Errorf("failed to generate random length: %w", err)
+	}
+	length := minLength + int(randomLengthOffset.Int64())
+
+	result := make([]byte, length)
+	for i := range result {
+		var randomIndex *big.Int
+		randomIndex, err = rand.Int(rand.Reader, big.NewInt(int64(len(charset))))
+		if err != nil {
+			return "", fmt.Errorf("failed to generate random character: %w", err)
+		}
+		result[i] = charset[randomIndex.Int64()]
+	}
+
+	return string(result), nil
+}

@@ -3,6 +3,7 @@ package cmd
 import (
 	"os"
 
+	"github.com/devusSs/dropawp/internal/system"
 	"github.com/spf13/cobra"
 )
 
@@ -25,6 +26,10 @@ This tool is in no way affiliated with Valve or Steam or CSFloat.
 
 Make sure to use it with caution and at your own risk. Do not use it for malicious purposes or purposes
 that would violate the Steam or CSFloat TOS.`,
+	PersistentPreRun: func(_ *cobra.Command, _ []string) {
+		err := system.CheckSupported()
+		cobra.CheckErr(err)
+	},
 }
 
 func Execute() {

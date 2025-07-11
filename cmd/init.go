@@ -19,8 +19,6 @@ var initCmd = &cobra.Command{
 			)
 		}
 
-		var cfg *config.Config
-
 		switch {
 		case initUseEnv:
 			config.SetEnvFile(initEnvFile)
@@ -45,6 +43,9 @@ var initCmd = &cobra.Command{
 
 		err = config.Write(cfg)
 		cobra.CheckErr(err)
+
+		fmt.Println()
+		fmt.Println("Configuration initialized successfully.")
 	},
 }
 

@@ -32,7 +32,7 @@ func (l *LastRun) validate() error {
 	return nil
 }
 
-func Write(projectName string) (*LastRun, error) {
+func Write(projectName string) error {
 	lr := &LastRun{
 		ProjectName: projectName,
 		LastRun:     time.Now(),
@@ -40,22 +40,22 @@ func Write(projectName string) (*LastRun, error) {
 
 	err := lr.validate()
 	if err != nil {
-		return nil, fmt.Errorf("validation error: %w", err)
+		return fmt.Errorf("validation error: %w", err)
 	}
 
 	var file *os.File
 	file, err = createLastRunFile()
 	if err != nil {
-		return nil, fmt.Errorf("failed to create last run file: %w", err)
+		return fmt.Errorf("failed to create last run file: %w", err)
 	}
 	defer file.Close()
 
 	err = json.NewEncoder(file).Encode(lr)
 	if err != nil {
-		return nil, fmt.Errorf("failed to write last run data: %w", err)
+		return fmt.Errorf("failed to write last run data: %w", err)
 	}
 
-	return lr, nil
+	return nil
 }
 
 func Read() (*LastRun, error) {
